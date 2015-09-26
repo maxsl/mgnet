@@ -18,11 +18,11 @@ func env(key, def string) string {
 }
 
 func init() {
-	TestConnParam.Host = env("TEST_MYSQL_HOST", "127.0.0.1")
+	TestConnParam.Host = env("TEST_MYSQL_HOST", "192.168.1.21")
 	TestConnParam.Port, _ = strconv.Atoi(env("TEST_MYSQL_PORT", "3306"))
 	TestConnParam.DbName = env("TEST_MYSQL_DBNAME", "mysql_test")
 	TestConnParam.Uname = env("TEST_MYSQL_UNAME", "root")
-	TestConnParam.Pass = env("TEST_MYSQL_PASS", "")
+	TestConnParam.Pass = env("TEST_MYSQL_PASS", "123456")
 }
 
 func Test_Connect(t *testing.T) {

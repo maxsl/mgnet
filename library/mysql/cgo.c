@@ -184,6 +184,8 @@ const char *my_stmt_error(MY_STMT *stmt) {
 int my_stmt_execute(MY_STMT *stmt, MYSQL_BIND *binds, MY_STMT_RES *res, MY_MODE mode) {
 	mysql_thread_init();
 
+	int i;
+
 	if (binds != NULL) {
 		if (mysql_stmt_bind_param(stmt->s, binds) != 0) {
 			return 1;
@@ -231,7 +233,7 @@ int my_stmt_execute(MY_STMT *stmt, MYSQL_BIND *binds, MY_STMT_RES *res, MY_MODE 
 			memset(stmt->output_lengths, 0, sizeof(unsigned long) * stmt->meta.num_fields);
 		}
 
-		for (int i = 0; i < stmt->meta.num_fields; i ++) {
+		for (i = 0; i < stmt->meta.num_fields; i ++) {
 			size_t size = 0;
 
 			switch (stmt->meta.fields[i].type) {
@@ -289,8 +291,10 @@ int my_stmt_execute(MY_STMT *stmt, MYSQL_BIND *binds, MY_STMT_RES *res, MY_MODE 
 int my_stmt_close(MY_STMT *stmt) {
 	mysql_thread_init();
 
+	int i;
+
 	if (stmt->row_cache != NULL) {
-		for (int i = 0; i < stmt->meta.num_fields; i ++) {
+		for (i = 0; i < stmt->meta.num_fields; i ++) {
 			if (stmt->row_cache[i] != NULL) {
 				free(stmt->row_cache[i]);
 			}
@@ -315,6 +319,8 @@ MY_ROW my_stmt_fetch_next(MY_STMT_RES *res) {
 	MY_STMT *stmt = res->stmt;
 
 	MY_ROW row = {0, 0, 0};
+	
+	int i;
 
 	if (stmt->meta.num_fields == 0) {
 		return row;
@@ -330,7 +336,7 @@ MY_ROW my_stmt_fetch_next(MY_STMT_RES *res) {
 		return row;
 	}
 
-	for (int i = 0; i < stmt->meta.num_fields; i ++) {
+	for (i = 0; i < stmt->meta.num_fields; i ++) {
 		if (stmt->output_lengths[i] == 0) {
 			continue;
 		}
