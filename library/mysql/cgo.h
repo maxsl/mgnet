@@ -2,7 +2,7 @@
 #define CGO_H
 
 #include <stdlib.h>
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 typedef enum my_mode {
 	MY_MODE_NONE,

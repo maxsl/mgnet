@@ -131,6 +131,11 @@ func (v *Value) Int64() int64 {
 	return v.getInt()
 }
 
+// Convert to int value.
+func (v *Value) Int() int {
+	return int(v.getInt())
+}
+
 // Convert to float32 value.
 func (v *Value) Float32() float32 {
 	return float32(v.getFloat())

@@ -6,22 +6,22 @@ import (
 	"fmt"
 )
 
-type UserDesc struct {
+type ExampleUserDesc struct {
 	Name string
 	Age int
 }
 
-type OrmUser struct {
+type ExampleOrmUser struct {
 	UserId int64
 	PtId string
 	Name string
-	Desc UserDesc
+	Desc ExampleUserDesc
 
 	isLoad bool	// 是否已载入
 }
 
 // 加载
-func (this *OrmUser) LoadDb(conn *mysql.Connection) {
+func (this *ExampleOrmUser) LoadDb(conn *mysql.Connection) {
 
 	res,err := conn.QueryTable(fmt.Sprintf("SELECT `UserId`, `PtId`, `Name`, `Desc` FROM `user` WHERE UserId='%d'", this.UserId))
 	if err != nil {
@@ -41,7 +41,7 @@ func (this *OrmUser) LoadDb(conn *mysql.Connection) {
 }
 
 // 更新
-func (this *OrmUser) SaveDb(conn *mysql.Connection) {
+func (this *ExampleOrmUser) SaveDb(conn *mysql.Connection) {
 
 	jsonDesc, err := json.Marshal(this.Desc)
 	if err != nil {
@@ -54,7 +54,7 @@ func (this *OrmUser) SaveDb(conn *mysql.Connection) {
 }
 
 // 新增
-func (this *OrmUser) Insert(conn *mysql.Connection) {
+func (this *ExampleOrmUser) Insert(conn *mysql.Connection) {
 
 	jsonDesc, err := json.Marshal(this.Desc)
 	if err != nil {
@@ -70,7 +70,7 @@ func (this *OrmUser) Insert(conn *mysql.Connection) {
 }
 
 // 删除
-func (this *OrmUser) Delete(conn *mysql.Connection) {
+func (this *ExampleOrmUser) Delete(conn *mysql.Connection) {
 
 	_,err := conn.Execute(fmt.Sprintf("DELETE FROM `user` WHERE UserId='%d'", this.UserId))
 	if err != nil {
