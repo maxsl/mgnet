@@ -5,7 +5,7 @@ import (
 )
 
 type Session struct {
-	id      uint64
+	id	int64
 
 	conn net.Conn
 }
@@ -24,7 +24,7 @@ func (this *Session) Conn() net.Conn {
 }
 
 // Session Id
-func (this *Session) Id() uint64 {
+func (this *Session) Id() int64 {
 	return this.id
 }
 
