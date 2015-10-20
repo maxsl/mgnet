@@ -8,15 +8,7 @@ import (
 )
 
 type CodecType interface {
-	EncodeType
-	DecodeType
-}
-
-type EncodeType interface {
 	NewEncoder(w io.Writer) Encoder
-}
-
-type DecodeType interface {
 	NewDecoder(r io.Reader) Decoder
 }
 
