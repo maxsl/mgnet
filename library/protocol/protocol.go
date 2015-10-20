@@ -2,7 +2,7 @@ package protocol
 
 import (
 	"io"
-	"github.com/golang/protobuf/proto"
+	"github.com/goodkele/mgnet/library/proto"
 )
 
 // 创建解析器
@@ -10,35 +10,37 @@ type CodecType struct {
 	
 }
 
-func (this *CodecType) NewEncoder(w io.Writer) Encoder {
-	return &Encoder{w}
+func (this *CodecType) NewEncoder(w io.Writer) *Encode {
+	return &Encode{w}
 }
 
-func (this *CodecType) NewDecoder(r io.Reader) Decoder {
-	return &Decoder{r, make([]byte, 0, 1024)}
+func (this *CodecType) NewDecoder(r io.Reader) *Decode {
+	return &Decode{r, make([]byte, 0, 1024)}
 }
 
 
 
 // 序列化
-type Encoder struct {
+type Encode struct {
 	write io.Writer
 }
 
 // 写入
-func (this *Encoder) Encode(msg interface{}) error {
+func (this *Encode) Encode(msg interface{}) error {
 	
+	var err error
+	var message []byte
 	if buf, ok := msg.(proto.Message); ok == true {		
-		if message, err := proto.Marshal(buf); err == nil {
-			// n, err := 
-			write.Write(message)
+		if message, err = proto.Marshal(buf); err == nil {
+			_, err = this.write.Write(message)
 		}
 	}
+	return err
 	
 }
 
 // 反序列化
-type Decoder struct {
+type Decode struct {
 	read io.Reader
 	p []byte
 }
@@ -46,10 +48,15 @@ type Decoder struct {
 // 读取
 func (this *Decode) Decode(msg interface{}) error {
 	
+	
+	var err error
 	if buf, ok := msg.(proto.Message); ok == true {	
-		n, err := read.Read(p[0:])
-		err = proto.Unmarshal(p, buf)
+		_, err = this.read.Read(this.p[0:])
+		if err == nil {
+			err = proto.Unmarshal(this.p, buf)
+		}
 	}
+	return err
 	
 }
 
