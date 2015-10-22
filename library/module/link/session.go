@@ -3,19 +3,25 @@ package link
 import (
 	"net"
 	"github.com/goodkele/mgnet/library/module"
+	"sync/atomic"
+)
+
+var (
+	globalSessionId uint64
 )
 
 type Session struct {
-	id	int64
+	id	uint64
 
 	conn net.Conn
-
 }
 
 // 创建session
 func NewSession(conn net.Conn, codecType module.CodecType) *Session {
+	sessionId := atomic.AddUint64(&globalSessionId, 1)
 	session := &Session{
-	conn : conn,
+		conn : conn,
+		id : sessionId,
 	}
 	return session
 }
@@ -26,7 +32,7 @@ func (this *Session) Conn() net.Conn {
 }
 
 // Session Id
-func (this *Session) Id() int64 {
+func (this *Session) Id() uint64 {
 	return this.id
 }
 

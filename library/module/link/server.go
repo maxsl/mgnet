@@ -11,8 +11,7 @@ type Server struct {
 	codecType module.CodecType
 
 	// About sessions
-	maxSessionId int64
-	sessions     map[int64]*Session
+	sessions     map[uint64]*Session
 	sessionMutex sync.Mutex
 }
 
@@ -21,7 +20,7 @@ func NewServer(listener net.Listener, codecType module.CodecType) *Server{
 	server := &Server{
 		listener : listener,
 		codecType : codecType,
-		sessions : make(map[int64]*Session),
+		sessions : make(map[uint64]*Session),
 	}
 	
 	return server
