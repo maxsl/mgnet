@@ -3,34 +3,29 @@ package link
 import (
 	"net"
 	"sync"
+	"sync/atomic"
 	"github.com/goodkele/mgnet/library/module"
 )
 
 type Server struct {
-	listener  net.Listener
-	codecType module.CodecType
+	listener  		net.Listener		// 监听器
+	codecType 		module.CodecType	// 解析器创建器
 
-	// About sessions
-	sessions     map[uint64]*Session
-	sessionMutex sync.Mutex
+	stopFlag 		int32				// 服务器时候已经停止
+	syncGroupStop 	sync.WaitGroup		// 等待锁，服务器关闭时等待所有session关闭
+
+	sessions     	map[uint64]*Session	// 服务器session
+	syncMutexSession sync.Mutex			// 锁，创建与销毁session时
 }
 
 // 创建服务器
-func NewServer(listener net.Listener, codecType module.CodecType) *Server{
+func NewServer(listener net.Listener, codecType module.CodecType) *Server {
 	server := &Server{
-		listener : listener,
-		codecType : codecType,
-		sessions : make(map[uint64]*Session),
+		listener 	: listener,
+		codecType 	: codecType,
+		sessions 	: make(map[uint64]*Session),
 	}
-	
 	return server
-}
-
-// 创建session
-func (this *Server) newSession(conn net.Conn) *Session {
-	session := NewSession(conn, this.codecType)
-	
-	return session
 }
 
 // 等待一个连接
@@ -39,7 +34,7 @@ func (this *Server) Accept() (*Session, error) {
 	if err != nil {
 		return nil, err
 	}
-	return this.newSession(conn), nil
+	return this.NewSession(conn), nil
 }
 
 // 监听端口
@@ -47,13 +42,46 @@ func (this *Server) Listener() net.Listener {
 	return this.listener
 }
 
-// 停止服务
-func (this *Server) Stop() {
-	this.listener.Close()
-	
+// 关闭
+func (this *Server) Stop() bool {
+	if atomic.CompareAndSwapInt32(&this.stopFlag, 0, 1) {		
+		this.listener.Close()
+		
+		for _, session := range this.sessions {
+			session.Close()
+		}
+		
+		this.syncGroupStop.Wait()
+		
+		return true
+	}
+	return false
 }
 
-// 关闭
-func (this *Server) Close() {
+// 创建session
+func (this *Server) NewSession(conn net.Conn) (*Session) {
+	this.syncMutexSession.Lock()
+	defer this.syncMutexSession.Unlock()
 	
+	session := NewSession(conn, this.codecType)
+	this.sessions[session.Id()] = session
+	// 增加回调
+	session.AddCloseCallback(this, func(){
+		this.DelSession(session)
+	})
+	
+	this.syncGroupStop.Add(1)
+	return session
 }
+
+// 删除session
+func (this *Server) DelSession(session *Session) {
+	this.syncMutexSession.Lock()
+	defer this.syncMutexSession.Unlock()
+	
+	delete(this.sessions, session.Id())
+	
+	this.syncGroupStop.Done()
+}
+
+

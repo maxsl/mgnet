@@ -26,7 +26,6 @@ type Encode struct {
 
 // 写入
 func (this *Encode) Encode(msg interface{}) error {
-	
 	var err error
 	var message []byte
 	if buf, ok := msg.(proto.Message); ok == true {		
@@ -35,7 +34,6 @@ func (this *Encode) Encode(msg interface{}) error {
 		}
 	}
 	return err
-	
 }
 
 // 反序列化
@@ -46,7 +44,6 @@ type Decode struct {
 
 // 读取
 func (this *Decode) Decode(msg interface{}) error {
-
 	var err error
 	if buf, ok := msg.(proto.Message); ok == true {	
 		_, err = this.read.Read(this.p[0:])
@@ -55,6 +52,5 @@ func (this *Decode) Decode(msg interface{}) error {
 		}
 	}
 	return err
-	
 }
 
