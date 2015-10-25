@@ -15,8 +15,8 @@ var (
 type Session struct {
 	id			uint64				// Session Id
 	conn 		net.Conn			// 连接
-	encoder 	module.Encoder		// 编码
-	decoder 	module.Decoder		// 解码
+	encoder 	module.Encoder		// 编码器
+	decoder 	module.Decoder		// 解码器
 	
 	syncMutexSend 	sync.Mutex		// 锁，发送时
 	syncMutexReceive sync.Mutex		// 锁，收到时
@@ -28,11 +28,13 @@ type Session struct {
 
 // 创建session
 func NewSession(conn net.Conn, codecType module.CodecType) *Session {
+
 	session := &Session{
 		id 		: atomic.AddUint64(&globalSessionId, 1),
 		conn 	: conn,
 		encoder : codecType.NewEncoder(conn),
 		decoder : codecType.NewDecoder(conn),
+		callbacks : list.New(),
 	}
 	
 	return session
@@ -54,7 +56,7 @@ func (this *Session) IsClose() (bool) {
 }
 
 // 收到消息
-func (this *Session) Receive(msg interface{}) (err error){
+func (this *Session) Receive(msg interface{}) (err error) {
 	this.syncMutexReceive.Lock()
 	defer this.syncMutexReceive.Unlock()
 
@@ -75,7 +77,7 @@ func (this *Session) Send(msg interface{}) (err error) {
 	return
 }
 
-// 关闭Session
+// 关闭
 func (this *Session) Close() {
 	if (atomic.CompareAndSwapInt32(&this.closeFlag, 0, 1)) {
 		this.ExecCloseCallback()
@@ -114,11 +116,7 @@ func (this *Session) DelCloseCallback(handler interface{}) {
 
 // 执行回调
 func (this *Session) ExecCloseCallback() {
-	if (this.IsClose()) {
-		return
-	}
-
 	for element := this.callbacks.Front(); element != nil; element = element.Next() {
-		element.Value.(closeCallback).Func()
+		element.Value.(*closeCallback).Func()
 	}
 }

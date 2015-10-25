@@ -8,14 +8,16 @@ import (
 )
 
 type Server struct {
-	listener  		net.Listener		// 监听器
-	codecType 		module.CodecType	// 解析器创建器
+	listener  		net.Listener		// 监听
+	codecType 		module.CodecType	// 创建器
 
-	stopFlag 		int32				// 服务器时候已经停止
+	stopFlag 		int32				// 服务器是否暂停
 	syncGroupStop 	sync.WaitGroup		// 等待锁，服务器关闭时等待所有session关闭
 
-	sessions     	map[uint64]*Session	// 服务器session
+	sessions     	map[uint64]*Session	// Sessions
 	syncMutexSession sync.Mutex			// 锁，创建与销毁session时
+	
+	online			uint64				// 当前在线人数
 }
 
 // 创建服务器
@@ -52,7 +54,6 @@ func (this *Server) Stop() bool {
 		}
 		
 		this.syncGroupStop.Wait()
-		
 		return true
 	}
 	return false
@@ -80,7 +81,6 @@ func (this *Server) DelSession(session *Session) {
 	defer this.syncMutexSession.Unlock()
 	
 	delete(this.sessions, session.Id())
-	
 	this.syncGroupStop.Done()
 }
 

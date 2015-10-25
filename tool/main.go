@@ -2,39 +2,27 @@ package main
 
 import (
 	"fmt"
+	"sync"
 //	"flag"
 //	"sync/atomic"
+//	"github.com/goodkele/mgnet/tool/module/a"
+//	"github.com/goodkele/mgnet/tool/module/b"
 )
-
-type Integer int
-
-func (a Integer) Less(b Integer) bool {
-	return a < b
-}
-
-func (a *Integer) Add(b Integer) {
-	*a += b
-}
-
-type LessAdder interface {
-	Less(b Integer) bool
-	Add(b Integer)
-}
-
 
 
 func main() {
 	
 	
-	var i Integer
-	var ier LessAdder = &i
+//	a.Say()
+//	b.Say()
 
-	i = 10
-	i.Add(10)
+	fmt.Println("asdf")
 	
+	var syncMutex sync.Mutex
 	
+	syncMutex.Lock()
 	
-	fmt.Println(ier.Less(20))
+	syncMutex.Unlock()
 	
 	
 	

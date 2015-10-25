@@ -45,6 +45,7 @@ type Decode struct {
 // 读取
 func (this *Decode) Decode(msg interface{}) error {
 	var err error
+	
 	if buf, ok := msg.(proto.Message); ok == true {	
 		_, err = this.read.Read(this.p[0:])
 		if err == nil {
