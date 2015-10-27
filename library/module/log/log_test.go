@@ -26,5 +26,21 @@ func Test_All(t *testing.T) {
 	
 	fmt.Println(du)
 	fmt.Println(switcher.Filename("hoho"))
+
+	// dd,_ := time.ParseDuration("1s")
+
+	tick := time.NewTicker(1 * time.Second)
 	
+	time.Sleep( 5 * time.Second)
+	
+	for t := range tick.C {
+		fmt.Println(t)
+	}
+	
+	tick.Stop()
+	
+//	c := time.Tick(1 * time.Second)
+//	for now := range c {
+//	    fmt.Printf("%v %s\n", now)
+//	}
 }
