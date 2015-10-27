@@ -45,12 +45,14 @@ func Debug(msg string, data ...interface{}) {
 
 type MgLog struct {
 	logFile		bufio.Writer
-	reporting	int	// 错误级别
+	reporting	int			// 错误级别
+	switcher	Switcher	// 文件切换器
 }
 
-func NewMgLog(dir string, reporting int) (*MgLog) {
+func NewMgLog(dir string, baseName string, reporting int, switcher Switcher) (*MgLog) {
+
 	return &MgLog{
-		
+		switcher : switcher,
 		reporting : reporting,
 	}
 }
