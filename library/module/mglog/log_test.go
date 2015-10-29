@@ -2,20 +2,27 @@ package mglog
 
 import (
 	"testing"
-	"fmt"
+	"time"
+	"runtime"
 )
 
 func Test_All(t *testing.T) {
 
-	mglog := NewMgLog("./", "wulei", 1, &SWITCHER_HOUR)
-	
-	mglog.Info("hello")
-	mglog.Error("hello")
-	mglog.Debug("hello")
-	
-	mglog.flush()
-	fmt.Println(mglog)
+	runtime.SetCPUProfileRate(4)
 
-	fmt.Println("a")
+	mglog := NewMgLog("./", "wulei", 0, &SWITCHER_HOUR)
+	
+	go func () {		
+		for {
+			
+			mglog.Debug(time.Now().String());
+			
+			time.Sleep(1 * time.Second)
+		}
+		
+	}()
+	
+	
+	time.Sleep(4 * time.Minute)
 	
 }
