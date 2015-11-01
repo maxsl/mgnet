@@ -28,7 +28,6 @@ type Session struct {
 
 // 创建session
 func NewSession(conn net.Conn, codecType module.CodecType) *Session {
-
 	session := &Session{
 		id 		: atomic.AddUint64(&globalSessionId, 1),
 		conn 	: conn,

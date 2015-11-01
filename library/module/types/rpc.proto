@@ -1,0 +1,19 @@
+syntax = "proto3";
+package types;
+
+// 此文件主要包括通用rpc服务器协议
+
+// 路由类型
+message Routing {
+	int32 	target	=	1;		// 目标服务
+	int32	refer	=	2;		// 来路服务
+	int32	url		=	3;		// 功能ID
+	string	sessId	=	4;		// Session Id
+	bytes 	msg		=	5;		// body
+	int32	gmt		=	6;		// 时间戳
+	int32	code	=	7;		// 状态代码，0为正常，大于0为异常
+	string	error	=	8;		// 如果有错误，这里是错误内容
+}
+
+
+

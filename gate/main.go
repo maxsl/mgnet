@@ -1,26 +1,41 @@
-package gate
+package main
 
-//import (
-//	"fmt"
-//)
+import (
+	
+	"net"
+	"time"
+	"github.com/goodkele/mgnet/library/module/constant"
+	"github.com/goodkele/mgnet/library/module/mglog"
+	"github.com/goodkele/mgnet/library/module/link"
+	"github.com/goodkele/mgnet/library/module/protocol"
+)
 
-//func main() {
-//	fmt.Println("hello gate")
-//}
-
-
-
+func init() {
+	// 初始化日志
+	mglog.InitLog("./", "gate", 0, &mglog.SWITCHER_DAY)
+}
 
 func main() {
-    var dog = new(dogs.Dog)
-    stdin := bufio.NewReader(os.Stdin)
-    sz, _ := binary.ReadVarint(stdin)
-    bytes := make([]byte, sz)
-    stdin.Read(bytes)
-    err := buf.Unmarshal(dog, bytes)
-    if err != nil {
-        log.Fatal(err)
-    }
-    fmt.Fprintf(os.Stderr, "Receiving %s of length %d\n", render(dog), sz)
 
+	address := ":10011"
+	listener, err := net.Listen("tcp", address)
+	if err != nil {		
+		mglog.Error(constant.ERROR_GATE_LISTENER, err)
+		return
+	}
+
+	
+
+//	func Serve(network, address string, codecType module.CodecType) (*Server, error) {
+	link.Serve("TCP", address, )
+
+	mglog.Debug("%v", listener)
+	
+	mglog.Info("assssdf")
+	
+	
+	time.Sleep(5 * time.Second)
+
+	
+	
 }

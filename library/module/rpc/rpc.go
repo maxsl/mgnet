@@ -2,23 +2,24 @@ package rpc
 
 import (
 	"github.com/goodkele/mgnet/library/module/proto"
+	"github.com/goodkele/mgnet/library/module/link"
 	"errors"
 	"fmt"
 )
 
 type RpcService struct {
-	
-	funcs map[int] func(proto.Message) (proto.Message, error)
+	// RPC函数参数： rpcIndex, refer, session, msg, gmt
+	funcs map[int32] func(int32, int32, *link.Session, proto.Message, int32) (proto.Message, int32, error)
 }
 
 func New() *RpcService {
 	return &RpcService{
-		funcs	:	make(map[int] func(proto.Message) (proto.Message, error)),
+		funcs	:	make(map[int32] func(int32, int32, *link.Session, proto.Message, int32) (proto.Message, int32, error)),
 	}
 }
 
 // 注册RPC
-func (this *RpcService) Register(rcpIndex int, funcHandle func(proto.Message) (proto.Message, error)) {
+func (this *RpcService) Register(rcpIndex int, funcHandle func(int32, int32, *link.Session, proto.Message, int32) (proto.Message, int32, error)) {
 	this.funcs[rcpIndex] = funcHandle
 }
 
@@ -34,11 +35,11 @@ func (this *RpcService) IsExists(rcpIndex int) bool {
 }
 
 // 执行RPC函数
-func (this *RpcService) Exec(rcpIndex int, req proto.Message) (proto.Message, error) {
+func (this *RpcService) Exec(rpcIndex int32, refer int32, session *link.Session, msg proto.Message, gmt int32) (proto.Message, int32, error) {
 	funcHandle, ok := this.funcs[rcpIndex]
 	if ok == false {
 		return nil, errors.New(fmt.Sprintf(ERROR_RPC_NOT_EXISTS,  rcpIndex))
 	}
-	res, err := funcHandle(req)
-	return res, err
+	res, code, err := funcHandle(rpcIndex, refer, session, msg, gmt)
+	return res, code, err
 }

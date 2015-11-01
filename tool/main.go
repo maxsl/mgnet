@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
-	"sync"
+	"crypto/sha1"
+	
+//	"sync"
 //	"flag"
 //	"sync/atomic"
 //	"github.com/goodkele/mgnet/tool/module/a"
@@ -12,19 +14,19 @@ import (
 
 func main() {
 	
+	data := []byte("This page intentionally left blank.")
 	
-//	a.Say()
-//	b.Say()
+	by := sha1.Sum(data)
+	
+	//s := string(by[0:])
+	
+	fmt.Printf("%x\n", by[0:])
+	fmt.Printf("% x\n", by[0:])
+	
+	//fmt.Println(s)
+	
+	//af064923bbf2301596aac4c273ba32178ebc4a96
 
-	fmt.Println("asdf")
-	
-	var syncMutex sync.Mutex
-	
-	syncMutex.Lock()
-	
-	syncMutex.Unlock()
-	
-	
 	
 	/*
 	var gopherType string
@@ -52,12 +54,6 @@ func main() {
 	
 	fmt.Println(uu)
 	*/
-	
-	
-
-
-	
-	
 	
 
 

@@ -2,5 +2,5 @@
 
 
 ## 目录
-   * [在Win32平台上编译PHP](<4.4.md>)
+   * [架构](<1架构.md>)
    * [Your First Extension](<5.md>)

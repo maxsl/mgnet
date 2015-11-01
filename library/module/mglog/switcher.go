@@ -56,5 +56,5 @@ func (this *SwitcherDay) NextDuration() (time.Duration) {
 func (this *SwitcherDay) Filename(basename string) (string){
 	now := time.Now()
 
-	return fmt.Sprintf("%s_%d%d%d%d.log", basename, now.Year(), now.Month(), now.Day(), now.Hour())
+	return fmt.Sprintf("%s_%d%d%d.log", basename, now.Year(), now.Month(), now.Day())
 }

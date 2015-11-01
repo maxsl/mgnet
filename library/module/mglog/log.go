@@ -24,15 +24,15 @@ func Info(msg string, data ...interface{}) {
 }
 
 func Warn(msg string, data ...interface{}) {
-	Log.Info(msg, data ...)
+	Log.Warn(msg, data ...)
 }
 
 func Error(msg string, data ...interface{}) {
-	Log.Info(msg, data ...)
+	Log.Error(msg, data ...)
 }
 
 func Debug(msg string, data ...interface{}) {
-	Log.Info(msg, data ...)
+	Log.Debug(msg, data ...)
 }
 
 
@@ -152,6 +152,10 @@ func (this *MgLog) Info(msg string, data ...interface{}) {
 		return
 	}
 
+	if this.reporting == E_ALL {
+		log.Printf("INFO : " + msg, data ...)
+	}
+
 	this.logger.Printf("INFO : " + msg, data ...)
 }
 
@@ -163,6 +167,10 @@ func (this *MgLog) Warn(msg string, data ...interface{}) {
 		return
 	}
 
+	if this.reporting == E_ALL {
+		log.Printf("WARN : " + msg, data ...)
+	}
+
 	this.logger.Printf("WARN : " + msg, data ...)
 }
 
@@ -172,6 +180,10 @@ func (this *MgLog) Error(msg string, data ...interface{}) {
 
 	if this.reporting > E_ERROR {
 		return
+	}
+
+	if this.reporting == E_ALL {
+		log.Printf("ERROR : " + msg, data ...)
 	}
 
 	this.logger.Printf("ERROR : " + msg, data ...)
