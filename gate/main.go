@@ -1,9 +1,9 @@
 package main
 
 import (
-	
-	"net"
+//	"net"
 	"time"
+	"runtime"
 	"github.com/goodkele/mgnet/library/module/constant"
 	"github.com/goodkele/mgnet/library/module/mglog"
 	"github.com/goodkele/mgnet/library/module/link"
@@ -18,18 +18,33 @@ func init() {
 func main() {
 
 	address := ":10011"
-	listener, err := net.Listen("tcp", address)
-	if err != nil {		
-		mglog.Error(constant.ERROR_GATE_LISTENER, err)
+
+	serve, err := link.Serve("tcp", address, &protocol.CodecType{})
+	if err != nil {
+		mglog.Error(constant.ERROR_GATE_SERVE, err)
 		return
 	}
+	mglog.Info("Gate: Start server")	
+
+	go func() {
+		mglog.Info("Gate: Start gate waiting accept")
+		
+		for {
+			session, err := serve.Accept()
+			mglog.Debug("Gate: accept, SessionId : %d", session.Id())
+			if err != nil {
+				mglog.Error(constant.ERROR_GATE_ACCEPT, err)
+			}
+			
+		}
+	}()
 
 	
+	runtime.Gosched()
+	
+	
 
-//	func Serve(network, address string, codecType module.CodecType) (*Server, error) {
-	link.Serve("TCP", address, )
-
-	mglog.Debug("%v", listener)
+	mglog.Debug("%v", serve)
 	
 	mglog.Info("assssdf")
 	

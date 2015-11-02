@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"crypto/sha1"
+//	"crypto/sha1"
 	
 //	"sync"
-//	"flag"
+	"flag"
 //	"sync/atomic"
 //	"github.com/goodkele/mgnet/tool/module/a"
 //	"github.com/goodkele/mgnet/tool/module/b"
@@ -14,21 +14,8 @@ import (
 
 func main() {
 	
-	data := []byte("This page intentionally left blank.")
 	
-	by := sha1.Sum(data)
 	
-	//s := string(by[0:])
-	
-	fmt.Printf("%x\n", by[0:])
-	fmt.Printf("% x\n", by[0:])
-	
-	//fmt.Println(s)
-	
-	//af064923bbf2301596aac4c273ba32178ebc4a96
-
-	
-	/*
 	var gopherType string
 	const (
         defaultGopher = "pocket"
@@ -49,11 +36,8 @@ func main() {
 	
 	fmt.Println("hello")
 	
-	var uu uint64
-	atomic.AddUint64(&uu, 4)
+
 	
-	fmt.Println(uu)
-	*/
 	
 
 

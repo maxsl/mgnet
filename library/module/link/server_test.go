@@ -7,8 +7,6 @@ import (
 	"github.com/goodkele/mgnet/library/module/protocol"
 	"sync"
 	"github.com/goodkele/mgnet/library/module/types"
-//	"time"
-//	"fmt"
 )
 
 func Test_server(t *testing.T) {
