@@ -9,36 +9,37 @@ import (
 
 type RpcService struct {
 	// RPC函数参数： rpcIndex, refer, session, msg, gmt
-	funcs map[int32] func(int32, int32, *link.Session, proto.Message, int32) (proto.Message, int32, error)
+	funcs map[uint32] func(uint32, uint32, *link.Session, proto.Message, uint32) (proto.Message, uint32, error)
 }
 
+// 新建RPC函数列表
 func New() *RpcService {
 	return &RpcService{
-		funcs	:	make(map[int32] func(int32, int32, *link.Session, proto.Message, int32) (proto.Message, int32, error)),
+		funcs	:	make(map[uint32] func(uint32, uint32, *link.Session, proto.Message, uint32) (proto.Message, uint32, error)),
 	}
 }
 
 // 注册RPC
-func (this *RpcService) Register(rcpIndex int, funcHandle func(int32, int32, *link.Session, proto.Message, int32) (proto.Message, int32, error)) {
+func (this *RpcService) Register(rcpIndex uint32, funcHandle func(uint32, uint32, *link.Session, proto.Message, uint32) (proto.Message, uint32, error)) {
 	this.funcs[rcpIndex] = funcHandle
 }
 
 // 移除RPC
-func (this *RpcService) Remove(rcpIndex int) {
+func (this *RpcService) Remove(rcpIndex uint32) {
 	delete(this.funcs, rcpIndex)
 }
 
 // 是否存在
-func (this *RpcService) IsExists(rcpIndex int) bool {
+func (this *RpcService) IsExists(rcpIndex uint32) bool {
 	_, ok := this.funcs[rcpIndex]
 	return ok
 }
 
 // 执行RPC函数
-func (this *RpcService) Exec(rpcIndex int32, refer int32, session *link.Session, msg proto.Message, gmt int32) (proto.Message, int32, error) {
-	funcHandle, ok := this.funcs[rcpIndex]
+func (this *RpcService) Exec(rpcIndex uint32, refer uint32, session *link.Session, msg proto.Message, gmt uint32) (proto.Message, uint32, error) {
+	funcHandle, ok := this.funcs[rpcIndex]
 	if ok == false {
-		return nil, errors.New(fmt.Sprintf(ERROR_RPC_NOT_EXISTS,  rcpIndex))
+		return nil, 0, errors.New(fmt.Sprintf(ERROR_RPC_NOT_EXISTS,  rpcIndex))
 	}
 	res, code, err := funcHandle(rpcIndex, refer, session, msg, gmt)
 	return res, code, err

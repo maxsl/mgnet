@@ -28,7 +28,7 @@ func receive(session *link.Session) {
 			mglog.Error(constant.ERROR_GATE_RECEIVE, err)
 		}
 		
-		
+		//routing.
 		
 	}
 }
@@ -54,7 +54,7 @@ func main() {
 				mglog.Error(constant.ERROR_GATE_ACCEPT, err)
 			}
 
-			go receive(session)			
+			go receive(session)
 		}
 	}()
 
