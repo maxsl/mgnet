@@ -4,17 +4,16 @@ import (
 	"fmt"
 	"crypto/sha1"
 	"time"
-	"strconv"
 )
 
 // 生成 Session
-func GenSessionId(ptId int32, serverId int32) string {
+func GenSessionId(ptId uint32, serverId uint32, slat string) (sessId string) {
 	now := time.Now()
 
-	timestamp := strconv.FormatInt(now.UnixNano(), 36)
+	oriId := fmt.Sprintf("%d%d%s%d", ptId, serverId, slat, now.UnixNano())
 
-	id := fmt.Sprintf("%x", sha1.Sum([]byte(timestamp)))
-
-	return id
+	sessId = fmt.Sprintf("%x", sha1.Sum([]byte(oriId)))
+	
+	return sessId
 }
 

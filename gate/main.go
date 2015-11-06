@@ -4,6 +4,8 @@ import (
 //	"net"
 	"time"
 	"runtime"
+	"github.com/goodkele/mgnet/gate/module/api"
+	"github.com/goodkele/mgnet/gate/module/epool"
 	"github.com/goodkele/mgnet/library/module/constant"
 	"github.com/goodkele/mgnet/library/module/mglog"
 	"github.com/goodkele/mgnet/library/module/link"
@@ -19,7 +21,10 @@ func init() {
 
 func receive(session *link.Session) {
 	
+	
+	
 	routing := &types.Routing{}
+	
 	
 	for {
 		
@@ -34,8 +39,19 @@ func receive(session *link.Session) {
 }
 
 func main() {
-
+	
+	var ptId		uint32
+	var serverId	uint32
+	
 	address := ":10011"
+
+	server := epool.NewServer(address, ptId, serverId);
+	
+	
+	
+	
+
+	
 
 	serve, err := link.Serve("tcp", address, &protocol.CodecType{})
 	if err != nil {
@@ -61,7 +77,12 @@ func main() {
 	
 	runtime.Gosched()
 	
+	api.Rpc.Exec(1, 1, &link.Session{}, nil, 10)
 	
+	
+	
+	mglog.Debug("%v", &epool.Server{})
+
 
 	mglog.Debug("%v", serve)
 	
@@ -70,6 +91,5 @@ func main() {
 	
 	time.Sleep(5 * time.Second)
 
-	
 	
 }
