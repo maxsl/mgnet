@@ -1,29 +1,28 @@
 package main
 
 import (
-	"fmt"
-	"time"
-	_ "github.com/goodkele/mgnet/library/module/types"
-	_ "github.com/goodkele/mgnet/library/module/proto"
+	"runtime"
+	"github.com/goodkele/mgnet/game/module/epool"
+	"github.com/goodkele/mgnet/library/module/mglog"
 )
 
+func init() {
+	// 初始化日志
+	mglog.InitLog("./", "game", 0, &mglog.SWITCHER_DAY)
+}
+
 func main() {
+	runtime.SetCPUProfileRate(4)
 	
-	dur,_ := time.ParseDuration("2s")
+	var ptId		uint32
+	var serverId	uint32
 	
-	tick := time.NewTicker(1 * time.Millisecond)
+	address := ":10012"
+	server := epool.NewServer(address, ptId, serverId)
 	
-//	for now := range  tick.C {
-//		fmt.Println(now)
-//	}
-	
-	for {
-		select {
-			
-			case now := <- tick.C :
-			fmt.Println(now)
-		}
-	}
-	
-	fmt.Println("hello server")
+	server.Serve()
+	//server.Stop()
+	server.SyncGroupStop.Wait()
+	//api.Rpc.Exec(1, 1, &link.Session{}, nil, 10)
+	//time.Sleep(5 * time.Second)
 }

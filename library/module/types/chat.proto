@@ -1,0 +1,14 @@
+syntax = "proto3";
+package types;
+
+// 此文件主要包括聊天服务器类型
+
+// 发送聊天请求
+message ReqChat {
+	
+}
+
+// 其他人聊天内容通知
+message NotifyChat {
+	
+}

@@ -37,7 +37,6 @@ func NewServer(address string, ptId uint32, serverId uint32) (*Server) {
 		ptId 		:	ptId,
 		serverId	:	serverId,
 		sessions 	: 	make(map[string]*link.Session),
-		conns		: 	make(map[uint32]*link.Session),
 		
 		receiveChan	:	make(chan *types.Routing, 1024),
 		sendChan	:	make(chan *types.Routing, 1024),
@@ -54,11 +53,13 @@ func (this *Server) Receive(session *link.Session) {
 	for {
 		err := session.Receive(routing)
 		if err != nil {
-			mglog.Error(constant.ERROR_RECEIVE, "gate", err)
+			mglog.Error(constant.ERROR_RECEIVE, "game", err)
 			// fixme 出现执行错误，应该把玩家踢下线
 			session.Close()
 			break
 		}
+		
+		mglog.Debug("Game : server.Receive %v", routing)
 		
 		this.receiveChan <- routing
 	}
@@ -66,12 +67,14 @@ func (this *Server) Receive(session *link.Session) {
 
 // 收到消息
 func (this *Server) RoutingReceive(routing *types.Routing) {
-	this.sendChan <- routing
+	
+	mglog.Debug("game : receive %v", routing)
+
 }
 
 // 发送消息
 func (this *Server) RoutingSend(routing *types.Routing) {
-	this.conns[constant.SERVER_GAME].Send(routing)
+	//this.conns[constant.SERVER_GAME].Send(routing)
 }
 
 // 更新函数
@@ -98,7 +101,7 @@ func (this *Server) Routing() {
 func (this *Server) Serve() {
 	serve, err := link.Serve("tcp", this.address, &protocol.CodecType{})
 	if err != nil {
-		mglog.Error(constant.ERROR_SERVE, "gate", err)
+		mglog.Error(constant.ERROR_SERVE, "game", err)
 		return
 	}
 	mglog.Info("Gate: Start server")
@@ -111,7 +114,7 @@ func (this *Server) Serve() {
 			session, err := serve.Accept()
 			mglog.Debug("Gate: accept, SessionId : %s", session.Id())
 			if err != nil {
-				mglog.Error(constant.ERROR_ACCEPT, "gate", err)
+				mglog.Error(constant.ERROR_ACCEPT, "game", err)
 			}
 
 			go this.Receive(session)
@@ -134,20 +137,14 @@ func (this *Server) Connect(connType uint32, address string) {
 	for {
 		session, err := link.Connect("tcp", address, &protocol.CodecType{})
 		if err != nil {
-			mglog.Error(constant.ERROR_CONNECT, "gate", connType, err)
+			mglog.Error(constant.ERROR_CONNECT, "game", connType, err)
 			time.Sleep(3 * time.Second)
 			continue
 		}
 	
-//		mglog.Info("Gate: Connect %d, address:%s", connType, address)
+		mglog.Info("Gate: Connect %d, address:%s", connType, address)
 		
-//		this.conns[connType] = session
-	
-//		msg := &types.Routing{1,2,3,"sessId1", []byte{}, 4, 5, "error6" }
-	
-//		mglog.Debug("%v", msg)
-	
-//		this.conns[connType].Send(msg)
+		this.conns[connType] = session
 	
 		go this.Receive(session)
 		break
