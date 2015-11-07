@@ -18,7 +18,8 @@ func API_Echo(rpcIndex uint32, refer uint32, session *link.Session, msg proto.Me
 }
 
 
-func API_Dispatch(rpcIndex uint32, refer uint32, session *link.Session, msg proto.Message, gmt uint32) (proto.Message, uint32, error) {
+func API_Receive(rpcIndex uint32, refer uint32, session *link.Session, msg proto.Message, gmt uint32) (proto.Message, uint32, error) {
+	
 	fmt.Println(rpcIndex)
 	fmt.Println(refer)
 	fmt.Println(session)

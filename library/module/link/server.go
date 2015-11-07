@@ -14,7 +14,7 @@ type Server struct {
 	stopFlag 		int32				// 服务器是否暂停
 	syncGroupStop 	sync.WaitGroup		// 等待锁，服务器关闭时等待所有session关闭
 
-	sessions     	map[uint64]*Session	// Sessions
+	sessions     	map[string]*Session	// Sessions
 	syncMutexSession sync.Mutex			// 锁，创建与销毁session时
 	
 	online			uint64				// 当前在线人数
@@ -25,7 +25,7 @@ func NewServer(listener net.Listener, codecType module.CodecType) *Server {
 	server := &Server{
 		listener 	: listener,
 		codecType 	: codecType,
-		sessions 	: make(map[uint64]*Session),
+		sessions 	: make(map[string]*Session),
 	}
 	return server
 }

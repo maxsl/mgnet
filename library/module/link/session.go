@@ -3,17 +3,21 @@ package link
 import (
 	"net"
 	"github.com/goodkele/mgnet/library/module"
+	"github.com/goodkele/mgnet/library/module/utility"
+	"github.com/goodkele/mgnet/library/module/constant"
 	"sync/atomic"
 	"container/list"
 	"sync"
+//	"fmt"
 )
 
-var (
-	globalSessionId uint64
-)
+//var (
+//	globalSessionId uint64
+//)
 
 type Session struct {
-	id			uint64				// Session Id
+	id			string
+	//uint64				// Session Id
 	conn 		net.Conn			// 连接
 	encoder 	module.Encoder		// 编码器
 	decoder 	module.Decoder		// 解码器
@@ -28,11 +32,14 @@ type Session struct {
 
 // 创建session
 func NewSession(conn net.Conn, codecType module.CodecType) *Session {
+	
+			//atomic.AddUint64(&globalSessionId, 1),
+
 	session := &Session{
-		id 		: atomic.AddUint64(&globalSessionId, 1),
-		conn 	: conn,
-		encoder : codecType.NewEncoder(conn),
-		decoder : codecType.NewDecoder(conn),
+		id 		:	utility.GenSessionId(0, 0, constant.CONFIG_SLAT),
+		conn 	: 	conn,
+		encoder : 	codecType.NewEncoder(conn),
+		decoder : 	codecType.NewDecoder(conn),
 		callbacks : list.New(),
 	}
 	
@@ -45,7 +52,7 @@ func (this *Session) Conn() net.Conn {
 }
 
 // Session Id
-func (this *Session) Id() uint64 {
+func (this *Session) Id() string {
 	return this.id
 }
 
