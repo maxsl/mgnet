@@ -139,15 +139,15 @@ func (this *Server) Connect(connType uint32, address string) {
 			continue
 		}
 	
-//		mglog.Info("Gate: Connect %d, address:%s", connType, address)
+		mglog.Info("Gate: Connect %d, address:%s", connType, address)
 		
-//		this.conns[connType] = session
+		this.conns[connType] = session
 	
-//		msg := &types.Routing{1,2,3,"sessId1", []byte{}, 4, 5, "error6" }
+		msg := &types.Routing{1,2,3,"sessId1", []byte{}, 4, 5, "error6" }
 	
-//		mglog.Debug("%v", msg)
+		mglog.Debug("%v", msg)
 	
-//		this.conns[connType].Send(msg)
+		this.conns[connType].Send(msg)
 	
 		go this.Receive(session)
 		break

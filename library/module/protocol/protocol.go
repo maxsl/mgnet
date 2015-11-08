@@ -16,7 +16,7 @@ func (this *CodecType) NewEncoder(w io.Writer) module.Encoder {
 }
 
 func (this *CodecType) NewDecoder(r io.Reader) module.Decoder {
-	return &Decode{r, make([]byte, 1024, 1024)}
+	return &Decode{r, make([]byte, 10240, 10240)}
 }
 
 // 序列化
@@ -45,11 +45,10 @@ type Decode struct {
 // 读取
 func (this *Decode) Decode(msg interface{}) error {
 	var err error
-	
-	if buf, ok := msg.(proto.Message); ok == true {	
+	if _, ok := msg.(proto.Message); ok == true {	
 		_, err = this.read.Read(this.p[0:])
 		if err == nil {
-			err = proto.Unmarshal(this.p, buf)
+			err = proto.Unmarshal(this.p, msg.(proto.Message))
 		}
 	}
 	return err

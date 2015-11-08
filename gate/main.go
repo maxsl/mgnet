@@ -21,6 +21,7 @@ func main() {
 	address := ":10011"
 	server := epool.NewServer(address, ptId, serverId)
 	server.Serve()
+	// 链接Game游戏服务器
 	server.Connect(constant.SERVER_GAME, ":10012")
 	
 	//server.Stop()

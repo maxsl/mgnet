@@ -55,11 +55,11 @@ func (this *Server) Receive(session *link.Session) {
 		if err != nil {
 			mglog.Error(constant.ERROR_RECEIVE, "game", err)
 			// fixme 出现执行错误，应该把玩家踢下线
-			session.Close()
-			break
+			//session.Close()
+			//break
 		}
 		
-		mglog.Debug("Game : server.Receive %v", routing)
+		mglog.Debug("game : server.Receive %v", routing)
 		
 		this.receiveChan <- routing
 	}
@@ -68,7 +68,7 @@ func (this *Server) Receive(session *link.Session) {
 // 收到消息
 func (this *Server) RoutingReceive(routing *types.Routing) {
 	
-	mglog.Debug("game : receive %v", routing)
+	mglog.Debug("game : server.RoutingReceive %v", routing)
 
 }
 

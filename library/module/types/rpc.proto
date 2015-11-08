@@ -14,3 +14,13 @@ message Routing {
 	int32	code	=	7;		// 状态代码，0为正常，大于0为异常
 	string	error	=	8;		// 如果有错误，这里是错误内容
 }
+
+// 链接服务器请求
+message ReqConnectServer {
+	
+}
+
+// 接受服务器内容
+message ResConnectServer {
+	
+}
