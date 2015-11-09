@@ -9,7 +9,7 @@ import (
 
 func init() {
 	// 初始化日志
-	mglog.InitLog("./", "gate", 0, &mglog.SWITCHER_DAY)
+	mglog.InitLog("./log", "gate", 0, &mglog.SWITCHER_DAY)
 }
 
 func main() {

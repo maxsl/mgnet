@@ -15,6 +15,35 @@ import (
 //	GameServer *Server
 //)
 
+type Connect struct {
+	connId	uint32
+	address string
+	status	int8
+	conn 	*link.Session
+	
+}
+
+func NewConnect(connId	uint32, address string) {
+	
+}
+
+// 链接到其他服务
+func (this *Connect) connect() {
+	
+}
+
+// 收到
+func (this *Connect) receive() {
+	
+}
+
+// 发送
+func (this *Connect) send() {
+	
+}
+
+
+
 type Server struct {
 	address 	string
 	ptId		uint32
@@ -71,6 +100,9 @@ func (this *Server) RoutingReceive(routing *types.Routing) {
 
 // 发送消息
 func (this *Server) RoutingSend(routing *types.Routing) {
+	
+	
+	
 	this.conns[constant.SERVER_GAME].Send(routing)
 }
 

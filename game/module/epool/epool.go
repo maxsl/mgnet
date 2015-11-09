@@ -147,6 +147,13 @@ func (this *Server) Connect(connType uint32, address string) {
 		this.conns[connType] = session
 	
 		go this.Receive(session)
+		
+		runtime.Gosched()
+		
+		// 发起链接验证请求
+		
+		
+		
 		break
 	}
 }
