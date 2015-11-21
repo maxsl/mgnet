@@ -16,5 +16,3 @@ type Encoder interface {
 type Decoder interface {
 	Decode(msg interface{}) error
 }
-
-

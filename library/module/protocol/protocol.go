@@ -28,7 +28,7 @@ type Encode struct {
 func (this *Encode) Encode(msg interface{}) error {
 	var err error
 	var message []byte
-	if buf, ok := msg.(proto.Message); ok == true {		
+	if buf, ok := msg.(proto.Message); ok == true {
 		if message, err = proto.Marshal(buf); err == nil {
 			_, err = this.write.Write(message)
 		}
@@ -51,6 +51,7 @@ func (this *Decode) Decode(msg interface{}) error {
 			err = proto.Unmarshal(this.p, msg.(proto.Message))
 		}
 	}
+	this.p = this.p[0:0]
 	return err
 }
 

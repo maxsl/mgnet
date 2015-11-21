@@ -61,6 +61,7 @@ type Server struct {
 
 // 创建服务
 func NewServer(address string, ptId uint32, serverId uint32) (*Server) {
+	
 	return &Server {
 		address 	: 	address,
 		ptId 		:	ptId,

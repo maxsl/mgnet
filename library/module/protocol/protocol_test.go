@@ -7,6 +7,20 @@ import (
 	"os"
 )
 
+//var (
+//	p chan 
+//)
+
+//func init() {
+//	p = make([]byte, 102400, 102400)
+//}
+
+//func run() {
+	
+//}
+
+
+
 
 func Test_Encode(t *testing.T) {
 	
