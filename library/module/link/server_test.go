@@ -3,12 +3,12 @@ package link
 import (
 	"io"
 	"testing"
-//	"net"
 	"sync"
 	"github.com/goodkele/mgnet/library/module/types"
 	"github.com/goodkele/mgnet/library/module/protocol"
-	//"time"
 	"runtime"
+	//"net"
+	//"time"
 	//"fmt"
 )
 

@@ -1,63 +1,127 @@
 package protocol
 
 import (
-	"fmt"
-	"testing"
+	"testing"	
 	"github.com/goodkele/mgnet/library/module/types"
-	"os"
+	"sync"
+	//"runtime"
 )
 
-//var (
-//	p chan 
-//)
 
-//func init() {
-//	p = make([]byte, 102400, 102400)
-//}
-
-//func run() {
-	
-//}
-
-
-
-
-func Test_Encode(t *testing.T) {
-	
-	fileName := "../../../log/wulei.txt"
-
-	fd, _ := os.OpenFile(fileName, os.O_CREATE, 0755)
-
-	codecType := &CodecType{}
-	
-	encode := codecType.NewEncoder(fd)
-	
-	seReq := &types.SearchRequest{"name1", 110, 20}
-	
-	encode.Encode(seReq)
-	
-	fmt.Println(seReq)
-
-	fd.Sync()
-	fd.Close()
+type epool struct {
+	epoolChan	chan []byte
 }
 
-func Test_Decode(t *testing.T) {
-	
-	fileName := "../../../log/wulei.txt"
+func NewEpool() (*epool) {
+	e := &epool {
+		epoolChan	:	make(chan[]byte, 1024),
+	}
+	return e
+}
 
-	fd, _ := os.OpenFile(fileName, os.O_CREATE, 0755)
+func (this *epool) Read(p []byte) (n int, err error) {
+	c := <- this.epoolChan
+	copy(p, c)
+	return len(p), nil
+}
+
+func (this *epool) Write(p []byte) (n int, err error) {
+	this.epoolChan <- p
+	return len(p), nil
+}
+
+var (
+	e = NewEpool()
+)
+
+func Test_All(t *testing.T) {
+	codecType := &CodecType{}
+	encode := codecType.NewEncoder(e)
+	decode := codecType.NewDecoder(e)
+
+	var waitSync sync.WaitGroup
+
+	go func() {
+		for i:=0; i<100; i++ {
+			if i % 2 == 0 {
+				seReq := &types.SearchRequest{"name1", int32(i)+1, int32(i)+2}
+				encode.Encode(seReq)
+			} else {
+				routing := &types.Routing{1,2,3,"4",[]byte("5"),6,7,"error"}	
+				encode.Encode(routing)
+			}
+			// time.Sleep(100 * time.Millisecond)
+			waitSync.Add(1)
+		}
+	}()
+	
+	//runtime.Gosched()
+	
+	go func() {
+		var i int
+		for {
+			if i % 2 == 0 {
+				seReq := &types.SearchRequest{}
+				decode.Decode(seReq)
+				//fmt.Println(seReq)
+			} else {
+				routing := &types.Routing{}	
+				decode.Decode(routing)
+				//fmt.Println(routing)
+			}
+			
+			i++
+			
+			waitSync.Done()
+		}
+	}()
+
+	waitSync.Wait()	
+}
+
+func Benchmark_All(b *testing.B) {
+	b.StopTimer()
+	b.StartTimer()
 
 	codecType := &CodecType{}
+	encode := codecType.NewEncoder(e)
+	decode := codecType.NewDecoder(e)
 
-	seReq := &types.SearchRequest{}
+	var waitSync sync.WaitGroup
+	var n int
+	n = 1000000
 	
-	decode := codecType.NewDecoder(fd)
+	waitSync.Add(n)
+	go func() {
+		for i:=0; i<n; i++ {
+			if i % 2 == 0 {
+				seReq := &types.SearchRequest{"name1", int32(i)+1, int32(i)+2}
+				encode.Encode(seReq)
+			} else {
+				routing := &types.Routing{1,2,3,"4",[]byte("5"),6,7,"error"}	
+				encode.Encode(routing)
+			}
+		}
+	}()
 	
-	decode.Decode(seReq)
+	//runtime.Gosched()
 	
-	fmt.Println(seReq)
+	go func() {
+		var i int
+		for {
+			if i % 2 == 0 {
+				seReq := &types.SearchRequest{}
+				decode.Decode(seReq)
+			} else {
+				routing := &types.Routing{}	
+				decode.Decode(routing)
+			}
+			
+			i++
+			
+			waitSync.Done()
+		}
+	}()
 	
-	fd.Sync()
-	fd.Close()
+	waitSync.Wait()	
 }

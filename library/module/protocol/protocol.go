@@ -1,6 +1,7 @@
 package protocol
 
 import (
+//	"fmt"
 	"io"
 	"github.com/goodkele/mgnet/library/module/proto"
 	"github.com/goodkele/mgnet/library/module"
@@ -46,12 +47,13 @@ type Decode struct {
 func (this *Decode) Decode(msg interface{}) error {
 	var err error
 	if _, ok := msg.(proto.Message); ok == true {	
-		_, err = this.read.Read(this.p[0:])
+		_, err = this.read.Read(this.p)
+		//fmt.Printf("decode %d", len(this.p))
 		if err == nil {
 			err = proto.Unmarshal(this.p, msg.(proto.Message))
 		}
 	}
-	this.p = this.p[0:0]
+	//this.p = make([]byte, 10240, 10240)
 	return err
 }
 
