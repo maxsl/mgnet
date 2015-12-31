@@ -5,8 +5,8 @@ import (
 	"github.com/goodkele/mgnet/library/module/types"
 	"sync"
 	//"runtime"
+	//"time"
 )
-
 
 type epool struct {
 	epoolChan	chan []byte
@@ -34,12 +34,13 @@ var (
 	e = NewEpool()
 )
 
-func Test_All(t *testing.T) {
+func Test_Protocol(t *testing.T) {
 	codecType := &CodecType{}
 	encode := codecType.NewEncoder(e)
 	decode := codecType.NewDecoder(e)
 
 	var waitSync sync.WaitGroup
+	waitSync.Add(100)
 
 	go func() {
 		for i:=0; i<100; i++ {
@@ -51,7 +52,6 @@ func Test_All(t *testing.T) {
 				encode.Encode(routing)
 			}
 			// time.Sleep(100 * time.Millisecond)
-			waitSync.Add(1)
 		}
 	}()
 	
@@ -69,9 +69,7 @@ func Test_All(t *testing.T) {
 				decode.Decode(routing)
 				//fmt.Println(routing)
 			}
-			
 			i++
-			
 			waitSync.Done()
 		}
 	}()
@@ -79,7 +77,7 @@ func Test_All(t *testing.T) {
 	waitSync.Wait()	
 }
 
-func Benchmark_All(b *testing.B) {
+func Benchmark_Protocol(b *testing.B) {
 	b.StopTimer()
 	b.StartTimer()
 
